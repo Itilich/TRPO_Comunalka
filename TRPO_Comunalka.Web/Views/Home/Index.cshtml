@@ -1,8 +1,261 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<!DOCTYPE html>
+<html>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <title>Расчет стоимости коммунальных услуг</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <label for="hot_water">Горячая вода(м3)</label>
+                <input type="text" id="hot_water" class="form-control" placeholder="Введите значение">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="cold_water">Холодная вода(м3)</label>
+                <input type="text" id="cold_water" class="form-control" placeholder="Введите значение">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="tbo">Вывоз ТБО(м3)</label>
+                <input type="text" id="tbo" class="form-control" placeholder="Введите значение">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="heating">Отопление(кВт*ч)</label>
+                <input type="text" id="heating" class="form-control" placeholder="Введите значение">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="energy">Энергоснабжение(кВт*ч)</label>
+                <input type="text" id="energy" class="form-control" placeholder="Введите значение">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="repair">Капитальный ремонт(м2)</label>
+                <input type="text" id="repair" class="form-control" placeholder="Введите значение">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="maintenance">Содержание жилого помещения(м2)</label>
+                <input type="text" id="maintenance" class="form-control" placeholder="Введите значение">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="benefit">Льгота</label>
+                <select id="benefit" class="form-control">
+                    <option value="" disabled selected hidden>Выберите льготу</option>
+                    <option value="инвалидность">Инвалидность</option>
+                    <option value="работник образовательного учреждения">Работник образовательного учреждения</option>
+                    <option value="ветераны">Ветераны</option>
+                    <option value="пенсионеры">Пенсионеры</option>
+                    <option value="многодетные семьи">Многодетные семьи</option>
+                    <option value="нет льготы">Нет льготы</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button onclick="calculate()" class="btn btn-primary">Рассчитать</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p id="result"></p>
+            </div>
+        </div>
+        <!-- Добавленный код -->
+        <div class="row">
+            <div class="col">
+                <canvas id="myChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+        <!-- /Добавленный код -->
+    </div>
+
+    <script>
+        // Библиотека для расчета коммунальных платежей
+        var TRPO_Comunalka = {
+            Lib: {
+                Comunalka: {
+                    Com: function (L, H, C, F, T, En, Kap, Space) {
+                        var k1 = 0.72; // Инвалидность
+                        var k2 = 0.85; // Работник образовательных учреждений
+                        var k3 = 0.7; // Ветеран
+                        var k4 = 0.75; // Пенсионер
+                        var k5 = 0.8; // Многодетная семья
+                        var k6 = 1; // Льгота отсутствует
+
+                        // Проверка на ошибки
+                        if (L <= 0 || L > 6) {
+                            throw new Error("Льгота выбирается по списку от 1 до 6");
+                        }
+                        if (H < 0 || C < 0 || F < 0 || T < 0 || En < 0 || Kap < 0 || Space < 0) {
+                            throw new Error("Комунальные данные не могут быть отрицательными!");
+                        }
+
+                        // Вычисление суммы к оплате
+                        switch (L) {
+                            case 1:
+                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k1;
+                            case 2:
+                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k2;
+                            case 3:
+                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k3;
+                            case 4:
+                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k4;
+                            case 5:
+                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k5;
+                            case 6:
+                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k6;
+                            default:
+                                throw new Error("Недопустимое значение L.");
+                        }
+                    }
+                }
+            }
+        };
+
+        function saveDataToFile(data) {
+            // Преобразование данных в JSON
+            var jsonData = JSON.stringify(data);
+
+            // Сохранение данных в файл
+            localStorage.setItem('comunalka_data', jsonData);
+        }
+
+        function loadDataFromFile() {
+            // Загрузка данных из файла
+            var jsonData = localStorage.getItem('comunalka_data');
+            if (jsonData) {
+                return JSON.parse(jsonData);
+            } else {
+                return null;
+            }
+        }
+
+        window.onload = function () {
+            // При загрузке страницы, проверяем наличие сохраненных данных и заполняем поля ввода
+            var savedData = loadDataFromFile();
+            if (savedData) {
+                document.getElementById('hot_water').value = savedData.hot_water;
+                document.getElementById('cold_water').value = savedData.cold_water;
+                document.getElementById('tbo').value = savedData.tbo;
+                document.getElementById('heating').value = savedData.heating;
+                document.getElementById('energy').value = savedData.energy;
+                document.getElementById('repair').value = savedData.repair;
+                document.getElementById('maintenance').value = savedData.maintenance;
+                document.getElementById('benefit').value = savedData.benefit;
+            }
+        }
+
+        function calculate() {
+            var hotWater = parseFloat(document.getElementById('hot_water').value) || 0;
+            var coldWater = parseFloat(document.getElementById('cold_water').value) || 0;
+            var tbo = parseFloat(document.getElementById('tbo').value) || 0;
+            var heating = parseFloat(document.getElementById('heating').value) || 0;
+            var energy = parseFloat(document.getElementById('energy').value) || 0;
+            var repair = parseFloat(document.getElementById('repair').value) || 0;
+            var maintenance = parseFloat(document.getElementById('maintenance').value) || 0;
+            var benefit = document.getElementById('benefit').value || "";
+            var result = 0;
+
+            try {
+                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), hotWater, coldWater, heating, tbo, energy, repair, maintenance);
+                document.getElementById('result').innerText = "Сумма к оплате: " + result.toFixed(2) + " руб.";
+
+                // Сохранение данных в файл
+                var dataToSave = {
+                    hot_water: hotWater,
+                    cold_water: coldWater,
+                    tbo: tbo,
+                    heating: heating,
+                    energy: energy,
+                    repair: repair,
+                    maintenance: maintenance,
+                    benefit: benefit
+                };
+                saveDataToFile(dataToSave);
+
+                // Уничтожаем предыдущий объект графика, если он существует
+                var oldChart = Chart.getChart("myChart");
+                if (oldChart) {
+                    oldChart.destroy();
+                }
+
+                // Создаем данные для диаграммы
+                var ctx = document.getElementById('myChart').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Горячая вода', 'Холодная вода', 'Вывоз ТБО', 'Отопление', 'Энергоснабжение', 'Капитальный ремонт', 'Содержание жилого помещения'],
+                        datasets: [{
+                            data: [hotWater * 39, coldWater * 15, tbo / 10 * 674, heating * 100, energy * 5, repair * 15, maintenance * 10],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(153, 102, 255, 0.5)',
+                                'rgba(255, 159, 64, 0.5)',
+                                'rgba(255, 99, 132, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        maintainAspectRatio: false
+                    }
+                });
+            } catch (error) {
+                document.getElementById('result').innerText = "Ошибка: " + error.message;
+            }
+        }
+
+
+
+        function getBenefitCoefficient(benefit) {
+            switch (benefit) {
+                case "инвалидность":
+                    return 1;
+                case "работник образовательного учреждения":
+                    return 2;
+                case "ветераны":
+                    return 3;
+                case "пенсионеры":
+                    return 4;
+                case "многодетные семьи":
+                    return 5;
+                case "нет льготы":
+                    return 6;
+                default:
+                    throw new Error("Неправильно выбрана льгота");
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+
+</html>

@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TRPO_Comunalka.Lib\TRPO_Comunalka.Lib.csproj" />
+  </ItemGroup>
+
 </Project>

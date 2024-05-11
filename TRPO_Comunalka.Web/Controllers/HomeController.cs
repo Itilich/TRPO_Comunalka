@@ -15,14 +15,28 @@ namespace TRPO_Comunalka.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View(new CommunalkaModel());
         }
-
-        public IActionResult Privacy()
+        [HttpPost]
+        public IActionResult Calculate(CommunalkaModel model)
         {
-            return View();
-        }
+            if (!ModelState.IsValid)
+            {
+                return View("Index", model);
+            }
 
+            try
+            {
+                double summa = TRPO_Comunalka.Lib.Comunalka.Com(model.L, model.H, model.C, model.F, model.T, model.En, model.Kap, model.Space);
+                ViewBag.summa = "Сумма к оплате: " + summa.ToString("0.00") + " руб.";
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.ErrorMessage = "Ошибка: " + ex.Message;
+            }
+
+            return View("Index", model);
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
