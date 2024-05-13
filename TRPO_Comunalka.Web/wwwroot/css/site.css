@@ -42,3 +42,13 @@ footer {
     background: #333;
     border-top: 2px solid #000;
 }
+/* Добавляем отступы между ячейками таблицы */
+table {
+    border-collapse: separate;
+    border-spacing: 10px; /* Здесь вы можете изменить значение отступа */
+}
+
+th,
+td {
+    padding: 10px; /* Добавляем внутренний отступ в ячейках */
+}
