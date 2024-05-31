@@ -1,3 +1,4 @@
+
 namespace TRPO_Comunalka.Test
 {
     public class Tests
@@ -11,17 +12,17 @@ namespace TRPO_Comunalka.Test
         public void ComTest()
         {
             const int L = 4;
+            const int Human = 3;
             const double H = 0.06;
             const double C = 0.111;
             const double F = 20;
-            const double T = 2;
             const double En = 263;
             const double Kap = 142;
             const double Space = 142;
 
-            const double expected = 5252.85375;
+            const double expected = 5264.25375;
 
-            var result = Lib.Comunalka.Com(L, H, C, F, T, En, Kap, Space);
+            var result = Lib.Comunalka.Com(L, Human, H, C, F, En, Kap, Space);
 
             Assert.AreEqual(expected, result, 0.1);
         }
@@ -29,15 +30,15 @@ namespace TRPO_Comunalka.Test
         public void ExceptionTest()
         {
             const int L = -1;
+            const int Human = 3;
             const double H = 0.06;
             const double C = 0.111;
             const double F = 20;
-            const double T = 2;
             const double En = 263;
             const double Kap = 142;
             const double Space = 142;
 
-            Assert.Throws<Exception>(() => Lib.Comunalka.Com(L, H, C, F, T, En, Kap, Space));
+            Assert.Throws<Exception>(() => Lib.Comunalka.Com(L, Human, H, C, F, En, Kap, Space));
         }
     }
 }

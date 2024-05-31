@@ -17,8 +17,8 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
         }
 
         .modal-content {
@@ -47,6 +47,12 @@
 
 <body>
     <div class="container">
+        <div class="human">
+            <div class="col">
+                <label for="Human">Количество прописанных человек</label>
+                <input type="text" id="Human" class="form-control" placeholder="Введите значение">
+            </div>
+        </div>
         <div class="row">
             <div class="col">
                 <label for="hot_water">Горячая вода(м3)</label>
@@ -57,12 +63,6 @@
             <div class="col">
                 <label for="cold_water">Холодная вода(м3)</label>
                 <input type="text" id="cold_water" class="form-control" placeholder="Введите значение">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label for="tbo">Вывоз ТБО(м3)</label>
-                <input type="text" id="tbo" class="form-control" placeholder="Введите значение">
             </div>
         </div>
         <div class="row">
@@ -135,36 +135,41 @@
         var TRPO_Comunalka = {
             Lib: {
                 Comunalka: {
-                    Com: function (L, H, C, F, T, En, Kap, Space) {
-                        var k1 = 0.72; // Инвалидность
-                        var k2 = 0.85; // Работник образовательных учреждений
-                        var k3 = 0.7; // Ветеран
-                        var k4 = 0.75; // Пенсионер
-                        var k5 = 0.8; // Многодетная семья
-                        var k6 = 1; // Льгота отсутствует
+                    Com: function (L, Human, H, C, F, En, Kap, Space) {
+                        const k1 = 0.72; //Инвалидность
+                        const k2 = 0.85; //Работник образовательных учреждений
+                        const k3 = 0.7; //Ветеран
+                        const k4 = 0.75; //Пенсионер
+                        const k5 = 0.8; //Многодетная семья
+                        const k6 = 1; //Льгота отсутствует
 
-                        // Проверка на ошибки
+                        ///ошибки---------------------------------------------------------
                         if (L <= 0 || L > 6) {
                             throw new Error("Льгота выбирается по списку от 1 до 6");
                         }
-                        if (H < 0 || C < 0 || F < 0 || T < 0 || En < 0 || Kap < 0 || Space < 0) {
-                            throw new Error("Комунальные данные не могут быть отрицательными!");
+                        if (Human < 0 || H < 0 || C < 0 || F < 0 || En < 0 || Kap < 0 || Space < 0) {
+                            throw new Error("Коммунальные данные не могут быть отрицательными!");
                         }
-
+                        ///Нормативные расчеты-------------------------------------------
+                        const hot_water = Human * 200;
+                        const cold_water = Human * 75;
+                        const heating = Human * 100;
+                        const energy = Human * 150;
+                        ///--------------------------------------------------------------
                         // Вычисление суммы к оплате
                         switch (L) {
                             case 1:
-                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k1;
+                                return ((H * 39) + (C * 15) + (Human * 50) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k1;
                             case 2:
-                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k2;
+                                return ((H * 39) + (C * 15) + (Human * 50) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k2;
                             case 3:
-                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k3;
+                                return ((H * 39) + (C * 15) + (Human * 50) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k3;
                             case 4:
-                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k4;
+                                return ((H * 39) + (C * 15) + (Human * 50) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k4;
                             case 5:
-                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k5;
+                                return ((H * 39) + (C * 15) + (Human * 50) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k5;
                             case 6:
-                                return ((H * 39) + (C * 15) + (T / 10 * 674) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k6;
+                                return ((H * 39) + (C * 15) + (Human * 50) + (F * 100) + (En * 5) + (Kap * 15) + (Space * 10)) * k6;
                             default:
                                 throw new Error("Недопустимое значение L.");
                         }
@@ -197,14 +202,15 @@
             if (savedData) {
                 document.getElementById('hot_water').value = savedData.hot_water;
                 document.getElementById('cold_water').value = savedData.cold_water;
-                document.getElementById('tbo').value = savedData.tbo;
                 document.getElementById('heating').value = savedData.heating;
                 document.getElementById('energy').value = savedData.energy;
                 document.getElementById('repair').value = savedData.repair;
                 document.getElementById('maintenance').value = savedData.maintenance;
                 document.getElementById('benefit').value = savedData.benefit;
+                document.getElementById('Human').value = savedData.human; 
             }
         }
+
         function openPreview() {
             var modal = document.getElementById("preview-modal");
             modal.style.display = "block";
@@ -215,12 +221,13 @@
             var modal = document.getElementById("preview-modal");
             modal.style.display = "none";
         }
+
         function getBenefitCoefficient1(benefit) {
             switch (benefit) {
                 case "инвалидность":
                     return 0.72;
                 case "работник образовательного учреждения":
-                    return 0,85;
+                    return 0.85;
                 case "ветераны":
                     return 0.7;
                 case "пенсионеры":
@@ -233,26 +240,27 @@
                     throw new Error("Неправильно выбрана льгота");
             }
         }
+
         function exportToExcel() {
             var hotWater = parseFloat(document.getElementById('hot_water').value) || 0;
             var coldWater = parseFloat(document.getElementById('cold_water').value) || 0;
-            var tbo = parseFloat(document.getElementById('tbo').value) || 0;
             var heating = parseFloat(document.getElementById('heating').value) || 0;
             var energy = parseFloat(document.getElementById('energy').value) || 0;
             var repair = parseFloat(document.getElementById('repair').value) || 0;
             var maintenance = parseFloat(document.getElementById('maintenance').value) || 0;
             var benefit = document.getElementById('benefit').value || "";
+            var human = parseFloat(document.getElementById('Human').value) || 0;
             var result = 0;
 
             try {
-                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), hotWater, coldWater, heating, tbo, energy, repair, maintenance);
+                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), human, hotWater, coldWater, heating, energy, repair, maintenance); // Изменено 'Human' на 'human'
 
-                // Формируем данные для экспорта в Excel
+                // Формирование данных для экспорта в Excel
                 var data = [
                     ["Коммунальная услуга", "Стоимость, руб", "Льгота", "Коэффициент льготы"],
                     ["Горячая вода", hotWater * 39 * getBenefitCoefficient1(benefit) + " руб", benefit, getBenefitCoefficient1(benefit)],
                     ["Холодная вода", coldWater * 15 * getBenefitCoefficient1(benefit) + " руб"],
-                    ["Вывоз ТБО", tbo / 10 * 674 * getBenefitCoefficient1(benefit) + " руб"],
+                    ["Вывоз ТБО", human * 50 * getBenefitCoefficient1(benefit) + " руб"], 
                     ["Отопление", heating * 100 * getBenefitCoefficient1(benefit) + " руб"],
                     ["Энергоснабжение", energy * 5 * getBenefitCoefficient1(benefit) + " руб"],
                     ["Капитальный ремонт", repair * 15 * getBenefitCoefficient1(benefit) + " руб"],
@@ -286,31 +294,31 @@
         function calculate() {
             var hotWater = parseFloat(document.getElementById('hot_water').value) || 0;
             var coldWater = parseFloat(document.getElementById('cold_water').value) || 0;
-            var tbo = parseFloat(document.getElementById('tbo').value) || 0;
             var heating = parseFloat(document.getElementById('heating').value) || 0;
             var energy = parseFloat(document.getElementById('energy').value) || 0;
             var repair = parseFloat(document.getElementById('repair').value) || 0;
             var maintenance = parseFloat(document.getElementById('maintenance').value) || 0;
             var benefit = document.getElementById('benefit').value || "";
+            var human = parseFloat(document.getElementById('Human').value) || 0;
             var result = 0;
 
             try {
-                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), hotWater, coldWater, heating, tbo, energy, repair, maintenance);
-                document.getElementById('result').innerText = "Сумма к оплате: " + result.toFixed(2) + " руб.";
+                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), human, hotWater, coldWater, heating, energy, repair, maintenance); // Изменено 'Human' на 'human'
+
+                document.getElementById('result').innerText = result.toFixed(2) + " руб.";
 
                 // Сохранение данных в файл
-                var dataToSave = {
+                var data = {
                     hot_water: hotWater,
                     cold_water: coldWater,
-                    tbo: tbo,
                     heating: heating,
                     energy: energy,
                     repair: repair,
                     maintenance: maintenance,
-                    benefit: benefit
+                    benefit: benefit,
+                    human: human 
                 };
-                saveDataToFile(dataToSave);
-
+                saveDataToFile(data);
                 // Уничтожаем предыдущий объект графика, если он существует
                 var oldChart = Chart.getChart("myChart");
                 if (oldChart) {
@@ -324,7 +332,7 @@
                     data: {
                         labels: ['Горячая вода', 'Холодная вода', 'Вывоз ТБО', 'Отопление', 'Энергоснабжение', 'Капитальный ремонт', 'Содержание жилого помещения'],
                         datasets: [{
-                            data: [hotWater * 39 * getBenefitCoefficient1(benefit), coldWater * 15 * getBenefitCoefficient1(benefit), tbo / 10 * 674 * getBenefitCoefficient1(benefit), heating * 100 * getBenefitCoefficient1(benefit), energy * 5 * getBenefitCoefficient1(benefit), repair * 15 * getBenefitCoefficient1(benefit), maintenance * 10 * getBenefitCoefficient1(benefit)],
+                            data: [hotWater * 39 * getBenefitCoefficient1(benefit), coldWater * 15 * getBenefitCoefficient1(benefit), human * 50 * getBenefitCoefficient1(benefit), heating * 100 * getBenefitCoefficient1(benefit), energy * 5 * getBenefitCoefficient1(benefit), repair * 15 * getBenefitCoefficient1(benefit), maintenance * 10 * getBenefitCoefficient1(benefit)],
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.5)',
                                 'rgba(54, 162, 235, 0.5)',
@@ -354,11 +362,12 @@
             } catch (error) {
                 document.getElementById('result').innerText = "Ошибка: " + error.message;
             }
+            
         }
         function previewReport() {
             var hotWater = parseFloat(document.getElementById('hot_water').value) || 0;
             var coldWater = parseFloat(document.getElementById('cold_water').value) || 0;
-            var tbo = parseFloat(document.getElementById('tbo').value) || 0;
+            var human = parseFloat(document.getElementById('Human').value) || 0;
             var heating = parseFloat(document.getElementById('heating').value) || 0;
             var energy = parseFloat(document.getElementById('energy').value) || 0;
             var repair = parseFloat(document.getElementById('repair').value) || 0;
@@ -367,7 +376,7 @@
             var result = 0;
 
             try {
-                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), hotWater, coldWater, heating, tbo, energy, repair, maintenance);
+                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), human, hotWater, coldWater, heating, energy, repair, maintenance);
 
                 // Отображение данных
                 var previewData = document.getElementById('preview-data');
@@ -395,11 +404,11 @@
                 var dataRows = [
                     { label: 'Горячая вода', cost: hotWater * 39 * getBenefitCoefficient1(benefit), benefit: benefit, coefficient: getBenefitCoefficient1(benefit) },
                     { label: 'Холодная вода', cost: coldWater * 15 * getBenefitCoefficient1(benefit) },
-                    { label: 'Вывоз ТБО', cost: tbo / 10 * 674 * getBenefitCoefficient1(benefit) },
+                    { label: 'Вывоз ТБО', cost: human * 50 * getBenefitCoefficient1(benefit) },
                     { label: 'Отопление', cost: heating * 100 * getBenefitCoefficient1(benefit) },
                     { label: 'Энергоснабжение', cost: energy * 5 * getBenefitCoefficient1(benefit) },
-                    { label: 'Капитальный ремонт', cost: repair * 15 * getBenefitCoefficient1(benefit)},
-                    { label: 'Содержание жилого помещения', cost: maintenance * 10 * getBenefitCoefficient1(benefit)},
+                    { label: 'Капитальный ремонт', cost: repair * 15 * getBenefitCoefficient1(benefit) },
+                    { label: 'Содержание жилого помещения', cost: maintenance * 10 * getBenefitCoefficient1(benefit) },
                     { label: 'Итоговая стоимость', cost: result.toFixed(2), benefit: "", coefficient: "" }
                 ];
 
@@ -446,6 +455,7 @@
             }
         }
     </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>

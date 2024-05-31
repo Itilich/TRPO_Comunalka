@@ -27,7 +27,7 @@ namespace TRPO_Comunalka.Web.Controllers
 
             try
             {
-                double summa = TRPO_Comunalka.Lib.Comunalka.Com(model.L, model.H, model.C, model.F, model.T, model.En, model.Kap, model.Space);
+                double summa = TRPO_Comunalka.Lib.Comunalka.Com(model.L, model.Human, model.H,  model.C, model.F, model.En, model.Kap, model.Space);
                 ViewBag.summa = "Сумма к оплате: " + summa.ToString("0.00") + " руб.";
             }
             catch (System.Exception ex)
