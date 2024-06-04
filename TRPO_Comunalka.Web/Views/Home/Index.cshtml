@@ -28,6 +28,9 @@
             border: 1px solid #888;
             width: 80%;
         }
+        .invalid-input {
+            border-color: red;
+        }
 
         .close {
             color: #aaaaaa;
@@ -53,81 +56,103 @@
                 <input type="text" id="Human" class="form-control" placeholder="Введите значение">
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <label for="hot_water">Горячая вода(м3)</label>
-                <input type="text" id="hot_water" class="form-control" placeholder="Введите значение">
+        <div id="rows-container">
+            <div class="row" id="hot-water-rows">
+                <div class="col">
+                    <div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="hot_water_norm">
+                            <label class="form-check-label" for="hot_water_norm">Нормативное значение</label>
+                        </div>
+                        <label for="hot_water">Горячая вода(м3) (счетчик 1)</label>
+                    </div>
+                    <input type="text" id="hot_water" class="form-control" placeholder="Введите значение">
+                    <button onclick="addHotWaterRow()" class="btn btn-secondary">Добавить счетчик</button>
+                </div>
+            </div>
+            <div class="row" id="cold-water-rows">
+                <div class="col">
+                    <div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="cold_water_norm">
+                            <label class="form-check-label" for="cold_water_norm">Нормативное значение</label>
+                        </div>
+                        <label for="cold_water">Холодная вода(м3) (счетчик 1)</label>
+                    </div>
+                    <input type="text" id="cold_water" class="form-control" placeholder="Введите значение">
+                    <button onclick="addColdWaterRow()" class="btn btn-secondary">Добавить счетчик</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="heating_norm">
+                        <label class="form-check-label" for="heating_norm">Нормативное значение</label>
+                    </div>
+                    <label for="heating">Отопление(кВт*ч)</label>
+                    <input type="text" id="heating" class="form-control" placeholder="Введите значение">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="energy_norm">
+                        <label class="form-check-label" for="energy_norm">Нормативное значение</label>
+                    </div>
+                    <label for="energy">Энергоснабжение(кВт*ч)</label>
+                    <input type="text" id="energy" class="form-control" placeholder="Введите значение">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="repair">Капитальный ремонт(м2)</label>
+                    <input type="text" id="repair" class="form-control" placeholder="Введите значение">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="maintenance">Содержание жилого помещения(м2)</label>
+                    <input type="text" id="maintenance" class="form-control" placeholder="Введите значение">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="benefit">Льгота</label>
+                    <select id="benefit" class="form-control">
+                        <option value="" disabled selected hidden>Выберите льготу</option>
+                        <option value="инвалидность">Инвалидность</option>
+                        <option value="работник образовательного учреждения">Работник образовательного учреждения</option>
+                        <option value="ветераны">Ветераны</option>
+                        <option value="пенсионеры">Пенсионеры</option>
+                        <option value="многодетные семьи">Многодетные семьи</option>
+                        <option value="нет льготы">Нет льготы</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button onclick="calculate()" class="btn btn-primary">Рассчитать</button>
+                    <button onclick="previewReport()" class="btn btn-info">Предварительный просмотр отчета</button>
+                    <button onclick="exportToExcel()" class="btn btn-success">Экспорт отчета в Excel</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p id="result"></p>
+                </div>
+            </div>
+            <div id="preview-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closePreview()">&times;</span>
+                    <div id="preview-data"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <canvas id="myChart" width="400" height="400"></canvas>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <label for="cold_water">Холодная вода(м3)</label>
-                <input type="text" id="cold_water" class="form-control" placeholder="Введите значение">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label for="heating">Отопление(кВт*ч)</label>
-                <input type="text" id="heating" class="form-control" placeholder="Введите значение">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label for="energy">Энергоснабжение(кВт*ч)</label>
-                <input type="text" id="energy" class="form-control" placeholder="Введите значение">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label for="repair">Капитальный ремонт(м2)</label>
-                <input type="text" id="repair" class="form-control" placeholder="Введите значение">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label for="maintenance">Содержание жилого помещения(м2)</label>
-                <input type="text" id="maintenance" class="form-control" placeholder="Введите значение">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label for="benefit">Льгота</label>
-                <select id="benefit" class="form-control">
-                    <option value="" disabled selected hidden>Выберите льготу</option>
-                    <option value="инвалидность">Инвалидность</option>
-                    <option value="работник образовательного учреждения">Работник образовательного учреждения</option>
-                    <option value="ветераны">Ветераны</option>
-                    <option value="пенсионеры">Пенсионеры</option>
-                    <option value="многодетные семьи">Многодетные семьи</option>
-                    <option value="нет льготы">Нет льготы</option>
-                </select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <button onclick="calculate()" class="btn btn-primary">Рассчитать</button>
-                <button onclick="previewReport()" class="btn btn-info">Предварительный просмотр отчета</button>
-                <button onclick="exportToExcel()" class="btn btn-success">Экспорт отчета в Excel</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <p id="result"></p>
-            </div>
-        </div>
-        <div id="preview-modal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closePreview()">&times;</span>
-                <div id="preview-data"></div>
-            </div>
-        </div>
-        <!-- Добавленный код -->
-        <div class="row">
-            <div class="col">
-                <canvas id="myChart" width="400" height="400"></canvas>
-            </div>
-        </div>
-        <!-- /Добавленный код -->
     </div>
 
     <script>
@@ -178,6 +203,106 @@
             }
         };
 
+        var hotWaterCounter = 1;
+        var coldWaterCounter = 1;
+
+        function addHotWaterRow() {
+            if (hotWaterCounter >= 3) return;
+            hotWaterCounter++;
+            var container = document.getElementById('hot-water-rows');
+            var newRow = document.createElement('div');
+            newRow.className = 'row';
+            newRow.id = `hot-water-row-${hotWaterCounter}`;
+            newRow.innerHTML = `
+                        <div class="col">
+                            <div>
+                                <label>Горячая вода(м3) (счетчик ${hotWaterCounter})</label>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Введите значение">
+                            <button onclick="removeRow('hot-water-row-${hotWaterCounter}', 'hot')" class="btn btn-danger">Удалить</button>
+                        </div>
+                    `;
+            container.appendChild(newRow);
+        }
+
+        function addColdWaterRow() {
+            if (coldWaterCounter >= 3) return;
+            coldWaterCounter++;
+            var container = document.getElementById('cold-water-rows');
+            var newRow = document.createElement('div');
+            newRow.className = 'row';
+            newRow.id = `cold-water-row-${coldWaterCounter}`;
+            newRow.innerHTML = `
+                        <div class="col">
+                            <div>
+                                <label>Холодная вода(м3) (счетчик ${coldWaterCounter})</label>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Введите значение">
+                            <button onclick="removeRow('cold-water-row-${coldWaterCounter}', 'cold')" class="btn btn-danger">Удалить</button>
+                        </div>
+                    `;
+            container.appendChild(newRow);
+        }
+
+        function removeRow(rowId, type) {
+            var row = document.getElementById(rowId);
+            row.parentNode.removeChild(row);
+            if (type === 'hot') {
+                hotWaterCounter--;
+            } else if (type === 'cold') {
+                coldWaterCounter--;
+            }
+        }
+        function updateValues() {
+            const humanCount = parseFloat(document.getElementById('Human').value) || 0;
+
+            // Выберите все строки горячей и холодной воды
+            const hotWaterInputs = document.querySelectorAll('#hot-water-rows input[type="text"]');
+            const coldWaterInputs = document.querySelectorAll('#cold-water-rows input[type="text"]');
+
+            hotWaterInputs.forEach(function (input) {
+                if (document.getElementById('hot_water_norm').checked) {
+                    input.value = (humanCount * 200) / 39 / 100;
+                    input.disabled = true;
+                } else {
+                    input.disabled = false;
+                }
+            });
+
+            coldWaterInputs.forEach(function (input) {
+                if (document.getElementById('cold_water_norm').checked) {
+                    input.value = (humanCount * 75) / 15 / 100;
+                    input.disabled = true;
+                } else {
+                    input.disabled = false;
+                }
+            });
+
+            const heatingInput = document.getElementById('heating');
+            const energyInput = document.getElementById('energy');
+
+            if (document.getElementById('heating_norm').checked) {
+                heatingInput.value = (humanCount * 5);
+                heatingInput.disabled = true;
+            } else {
+                heatingInput.disabled = false;
+            }
+
+            if (document.getElementById('energy_norm').checked) {
+                energyInput.value = (humanCount * 150) / 5;
+                energyInput.disabled = true;
+            } else {
+                energyInput.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('hot_water_norm').addEventListener('change', updateValues);
+            document.getElementById('cold_water_norm').addEventListener('change', updateValues);
+            document.getElementById('heating_norm').addEventListener('change', updateValues);
+            document.getElementById('energy_norm').addEventListener('change', updateValues);
+            document.getElementById('Human').addEventListener('input', updateValues);
+        });
         function saveDataToFile(data) {
             // Преобразование данных в JSON
             var jsonData = JSON.stringify(data);
@@ -242,8 +367,8 @@
         }
 
         function exportToExcel() {
-            var hotWater = parseFloat(document.getElementById('hot_water').value) || 0;
-            var coldWater = parseFloat(document.getElementById('cold_water').value) || 0;
+            var hotWater = 0;
+            var coldWater = 0;
             var heating = parseFloat(document.getElementById('heating').value) || 0;
             var energy = parseFloat(document.getElementById('energy').value) || 0;
             var repair = parseFloat(document.getElementById('repair').value) || 0;
@@ -253,20 +378,42 @@
             var result = 0;
 
             try {
-                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), human, hotWater, coldWater, heating, energy, repair, maintenance); // Изменено 'Human' на 'human'
+                // Суммируем значения из всех строк горячей воды
+                var hotWaterRows = document.querySelectorAll('#hot-water-rows input[type="text"]');
+                hotWaterRows.forEach(function (input) {
+                    hotWater += parseFloat(input.value) || 0;
+                });
+
+                // Суммируем значения из всех строк холодной воды
+                var coldWaterRows = document.querySelectorAll('#cold-water-rows input[type="text"]');
+                coldWaterRows.forEach(function (input) {
+                    coldWater += parseFloat(input.value) || 0;
+                });
+                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), human, hotWater, coldWater, heating, energy, repair, maintenance);
 
                 // Формирование данных для экспорта в Excel
                 var data = [
                     ["Коммунальная услуга", "Стоимость, руб", "Льгота", "Коэффициент льготы"],
-                    ["Горячая вода", hotWater * 39 * getBenefitCoefficient1(benefit) + " руб", benefit, getBenefitCoefficient1(benefit)],
-                    ["Холодная вода", coldWater * 15 * getBenefitCoefficient1(benefit) + " руб"],
-                    ["Вывоз ТБО", human * 50 * getBenefitCoefficient1(benefit) + " руб"], 
-                    ["Отопление", heating * 100 * getBenefitCoefficient1(benefit) + " руб"],
-                    ["Энергоснабжение", energy * 5 * getBenefitCoefficient1(benefit) + " руб"],
-                    ["Капитальный ремонт", repair * 15 * getBenefitCoefficient1(benefit) + " руб"],
-                    ["Содержание жилого помещения", maintenance * 10 * getBenefitCoefficient1(benefit) + " руб"],
-                    ["Итоговая стоимость", result.toFixed(2) + " руб", "", ""]
+                    // Добавляем значения из добавленных строк
                 ];
+
+                // Добавляем значения из добавленных строк горячей воды
+                hotWaterRows.forEach(function (input, index) {
+                    data.push(["Горячая вода (счетчик " + (index + 1) + ")", parseFloat(input.value) * 39 * getBenefitCoefficient1(benefit) + " руб"]);
+                });
+
+                // Добавляем значения из добавленных строк холодной воды
+                coldWaterRows.forEach(function (input, index) {
+                    data.push(["Холодная вода (счетчик " + (index + 1) + ")", parseFloat(input.value) * 15 * getBenefitCoefficient1(benefit) + " руб"]);
+                });
+
+                // Добавляем остальные данные
+                data.push(["Вывоз ТБО", human * 50 * getBenefitCoefficient1(benefit) + " руб"]);
+                data.push(["Отопление", heating * 100 * getBenefitCoefficient1(benefit) + " руб"]);
+                data.push(["Энергоснабжение", energy * 5 * getBenefitCoefficient1(benefit) + " руб"]);
+                data.push(["Капитальный ремонт", repair * 15 * getBenefitCoefficient1(benefit) + " руб"]);
+                data.push(["Содержание жилого помещения", maintenance * 10 * getBenefitCoefficient1(benefit) + " руб"]);
+                data.push(["Итоговая стоимость", result.toFixed(2) + " руб", benefit, getBenefitCoefficient1(benefit)]);
 
                 // Создаем новую книгу Excel
                 var wb = XLSX.utils.book_new();
@@ -292,8 +439,8 @@
         }
 
         function calculate() {
-            var hotWater = parseFloat(document.getElementById('hot_water').value) || 0;
-            var coldWater = parseFloat(document.getElementById('cold_water').value) || 0;
+            var hotWater = 0; // Обнуляем исходное значение горячей воды
+            var coldWater = 0; // Обнуляем исходное значение холодной воды
             var heating = parseFloat(document.getElementById('heating').value) || 0;
             var energy = parseFloat(document.getElementById('energy').value) || 0;
             var repair = parseFloat(document.getElementById('repair').value) || 0;
@@ -303,7 +450,18 @@
             var result = 0;
 
             try {
-                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), human, hotWater, coldWater, heating, energy, repair, maintenance); // Изменено 'Human' на 'human'
+                // Суммируем значения из всех строк горячей воды
+                var hotWaterRows = document.querySelectorAll('#hot-water-rows input[type="text"]');
+                hotWaterRows.forEach(function (input) {
+                    hotWater += parseFloat(input.value) || 0;
+                });
+
+                // Суммируем значения из всех строк холодной воды
+                var coldWaterRows = document.querySelectorAll('#cold-water-rows input[type="text"]');
+                coldWaterRows.forEach(function (input) {
+                    coldWater += parseFloat(input.value) || 0;
+                });
+                result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), human, hotWater, coldWater, heating, energy, repair, maintenance); 
 
                 document.getElementById('result').innerText = result.toFixed(2) + " руб.";
 
@@ -316,7 +474,7 @@
                     repair: repair,
                     maintenance: maintenance,
                     benefit: benefit,
-                    human: human 
+                    human: human
                 };
                 saveDataToFile(data);
                 // Уничтожаем предыдущий объект графика, если он существует
@@ -362,11 +520,12 @@
             } catch (error) {
                 document.getElementById('result').innerText = "Ошибка: " + error.message;
             }
-            
+
         }
+
         function previewReport() {
-            var hotWater = parseFloat(document.getElementById('hot_water').value) || 0;
-            var coldWater = parseFloat(document.getElementById('cold_water').value) || 0;
+            var hotWater = 0; // Обнуляем исходное значение горячей воды
+            var coldWater = 0; // Обнуляем исходное значение холодной воды
             var human = parseFloat(document.getElementById('Human').value) || 0;
             var heating = parseFloat(document.getElementById('heating').value) || 0;
             var energy = parseFloat(document.getElementById('energy').value) || 0;
@@ -376,6 +535,18 @@
             var result = 0;
 
             try {
+                // Суммируем значения из всех строк горячей воды
+                var hotWaterRows = document.querySelectorAll('#hot-water-rows input[type="text"]');
+                hotWaterRows.forEach(function (input) {
+                    hotWater += parseFloat(input.value) || 0;
+                });
+
+                // Суммируем значения из всех строк холодной воды
+                var coldWaterRows = document.querySelectorAll('#cold-water-rows input[type="text"]');
+                coldWaterRows.forEach(function (input) {
+                    coldWater += parseFloat(input.value) || 0;
+                });
+
                 result = TRPO_Comunalka.Lib.Comunalka.Com(getBenefitCoefficient(benefit), human, hotWater, coldWater, heating, energy, repair, maintenance);
 
                 // Отображение данных
@@ -400,16 +571,49 @@
                 headerRow.appendChild(th4);
                 tbody.appendChild(headerRow);
 
-                // Данные
+                // Добавляем данные из добавленных строк
+                hotWaterRows.forEach(function (input, index) {
+                    var tr = document.createElement('tr');
+                    var td1 = document.createElement('td');
+                    td1.textContent = 'Горячая вода (счетчик ' + (index + 1) + ')';
+                    var td2 = document.createElement('td');
+                    td2.textContent = parseFloat(input.value) * 39 * getBenefitCoefficient1(benefit) + ' руб';
+                    var td3 = document.createElement('td');
+                    td3.textContent = ""; // Льгота
+                    var td4 = document.createElement('td');
+                    td4.textContent = ""; // Коэффициент льготы
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+                    tr.appendChild(td4);
+                    tbody.appendChild(tr);
+                });
+
+                coldWaterRows.forEach(function (input, index) {
+                    var tr = document.createElement('tr');
+                    var td1 = document.createElement('td');
+                    td1.textContent = 'Холодная вода (счетчик ' + (index + 1) + ')';
+                    var td2 = document.createElement('td');
+                    td2.textContent = parseFloat(input.value) * 15 * getBenefitCoefficient1(benefit) + ' руб';
+                    var td3 = document.createElement('td');
+                    td3.textContent = ""; // Льгота
+                    var td4 = document.createElement('td');
+                    td4.textContent = ""; // Коэффициент льготы
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+                    tr.appendChild(td4);
+                    tbody.appendChild(tr);
+                });
+
+                // Остальные данные
                 var dataRows = [
-                    { label: 'Горячая вода', cost: hotWater * 39 * getBenefitCoefficient1(benefit), benefit: benefit, coefficient: getBenefitCoefficient1(benefit) },
-                    { label: 'Холодная вода', cost: coldWater * 15 * getBenefitCoefficient1(benefit) },
                     { label: 'Вывоз ТБО', cost: human * 50 * getBenefitCoefficient1(benefit) },
                     { label: 'Отопление', cost: heating * 100 * getBenefitCoefficient1(benefit) },
                     { label: 'Энергоснабжение', cost: energy * 5 * getBenefitCoefficient1(benefit) },
                     { label: 'Капитальный ремонт', cost: repair * 15 * getBenefitCoefficient1(benefit) },
                     { label: 'Содержание жилого помещения', cost: maintenance * 10 * getBenefitCoefficient1(benefit) },
-                    { label: 'Итоговая стоимость', cost: result.toFixed(2), benefit: "", coefficient: "" }
+                    { label: 'Итоговая стоимость', cost: result.toFixed(2), benefit: benefit, coefficient: getBenefitCoefficient1(benefit) }
                 ];
 
                 dataRows.forEach(function (row) {
